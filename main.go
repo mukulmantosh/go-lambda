@@ -124,8 +124,3 @@ func handler(ctx context.Context, event events.APIGatewayProxyRequest) (events.A
 func main() {
 	lambda.Start(handler)
 }
-
-//aws lambda create-function --function-name hello-world --package-type Image --code ImageUri=254501641575.dkr.ecr.ap-south-1.amazonaws.com/go-lambda:latest --role arn:aws:iam::254501641575:role/LambdaRole
-
-// Update
-// aws lambda update-function-code --function-name hello-world --image-uri 254501641575.dkr.ecr.ap-south-1.amazonaws.com/go-lambda:latest
