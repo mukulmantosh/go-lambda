@@ -13,6 +13,12 @@ $ go get github.com/aws/aws-sdk-go
 $ go get -u github.com/slack-go/slack
 ```
 
+### Building Docker Image
+```
+$ docker build -t go-lambda:latest .
+```
+
+
 ### Creating Function
 
 ```bash
@@ -25,3 +31,4 @@ aws lambda create-function --function-name hello-world --package-type Image --co
 ```bash
 aws lambda update-function-code --function-name hello-world --image-uri 254501641575.dkr.ecr.ap-south-1.amazonaws.com/go-lambda:latest
 ```
+
