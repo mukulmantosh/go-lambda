@@ -19,6 +19,9 @@ $ docker build -t go-lambda:latest .
 ```
 
 
+### Deploying Image
+
+Follow the instructions provided over here https://docs.aws.amazon.com/lambda/latest/dg/go-image.html
 ### Creating Function
 
 ```bash
