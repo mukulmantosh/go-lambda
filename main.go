@@ -23,8 +23,8 @@ type Birthday struct {
 }
 
 func readFileFromS3() []byte {
-	bucket := "mukulmantosh"
-	item := "names.json"
+	bucket := os.Getenv("BUCKET_NAME")
+	item := os.Getenv("FILE_NAME")
 
 	// Create an AWS session
 	sess, _ := session.NewSession(&aws.Config{
@@ -54,8 +54,6 @@ func readFileFromS3() []byte {
 }
 
 func sendSlackMessage(name string) {
-	os.Setenv("SLACK_TOKEN", "xoxb-5633598707492-5631605961058-kk4hnTrsrwqb3deYyJ6dYgEz")
-	os.Setenv("CHANNEL_ID", "C05JG6MFGJH")
 	api := slack.New(os.Getenv("SLACK_TOKEN"))
 	channel := os.Getenv("CHANNEL_ID")
 
@@ -78,7 +76,7 @@ func sendSlackMessage(name string) {
 }
 
 func chatGpt(name string) string {
-	client := openai.NewClient("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")
+	client := openai.NewClient(os.Getenv("OPENAI_TOKEN"))
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
