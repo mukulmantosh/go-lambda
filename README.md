@@ -1,3 +1,7 @@
+# SlackBot with Go & OpenAI
+
+![background](./misc/background.png)
+
 
 ```bash
 go get github.com/sashabaranov/go-openai
