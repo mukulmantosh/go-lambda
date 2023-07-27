@@ -22,10 +22,7 @@ type Birthday struct {
 	DOB  string `json:"dob"`
 }
 
-func readFileFromS3() []byte {
-	bucket := os.Getenv("BUCKET_NAME")
-	item := os.Getenv("FILE_NAME")
-
+func readFileFromS3(bucket string, item string) []byte {
 	// Create an AWS session
 	sess, _ := session.NewSession(&aws.Config{
 		Region: aws.String("ap-south-1")},
@@ -35,7 +32,7 @@ func readFileFromS3() []byte {
 	downloader := s3manager.NewDownloader(sess)
 
 	// 4) Download the item from the bucket.
-	file, err := os.Create(item)
+	file, err := os.Create("/tmp/" + item)
 	_, err = downloader.Download(file,
 		&s3.GetObjectInput{
 			Bucket: aws.String(bucket),
@@ -55,7 +52,7 @@ func readFileFromS3() []byte {
 
 func sendSlackMessage(name string) {
 	api := slack.New(os.Getenv("SLACK_TOKEN"))
-	channel := os.Getenv("CHANNEL_ID")
+	channel := []string{os.Getenv("CHANNEL_ID")}
 
 	attachment := slack.Attachment{
 		Pretext: "Birthday Wishes 🎉🎉",
@@ -64,8 +61,7 @@ func sendSlackMessage(name string) {
 	}
 
 	_, timestamp, err := api.PostMessage(
-		channel,
-
+		channel[0],
 		slack.MsgOptionAttachments(attachment),
 	)
 
@@ -73,6 +69,20 @@ func sendSlackMessage(name string) {
 		panic(err)
 	}
 	fmt.Printf("Message sent : %s", timestamp)
+
+	// Send Birthday Photo
+	readFileFromS3(os.Getenv("BUCKET_NAME"), "birthday.jpg")
+
+	params := slack.FileUploadParameters{
+		Channels: channel,
+		File:     "/tmp/birthday.jpg",
+	}
+
+	_, err = api.UploadFile(params)
+	if err != nil {
+		fmt.Printf("Unable to upload file to Slack %s\n", err)
+	}
+
 }
 
 func chatGpt(name string) string {
@@ -102,9 +112,12 @@ func handler(ctx context.Context, event events.APIGatewayProxyRequest) (events.A
 	currentTime := time.Now()
 	currentDate := currentTime.Format("2006-01-02")
 
+	bucket := os.Getenv("BUCKET_NAME")
+	item := os.Getenv("FILE_NAME")
+
 	var birthday []Birthday
 
-	S3File := readFileFromS3()
+	S3File := readFileFromS3(bucket, item)
 	json.Unmarshal(S3File, &birthday)
 
 	for _, v := range birthday {
