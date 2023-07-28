@@ -25,13 +25,13 @@ Follow the instructions provided over here https://docs.aws.amazon.com/lambda/la
 ### Creating Function
 
 ```bash
-aws lambda create-function --function-name hello-world --package-type Image --code ImageUri=254501641575.dkr.ecr.ap-south-1.amazonaws.com/go-lambda:latest --role arn:aws:iam::254501641575:role/LambdaRole
+aws lambda create-function --function-name <FUNCTION-NAME> --package-type Image --code <ECR-IMAGE-URL> --role <AWS-ROLE-NAME>
 ```
 
 
 ### Updating Function
 
 ```bash
-aws lambda update-function-code --function-name hello-world --image-uri 254501641575.dkr.ecr.ap-south-1.amazonaws.com/go-lambda:latest
+aws lambda update-function-code --function-name <FUNCTION-NAME> --image-uri <ECR-IMAGE-URL>
 ```
 
